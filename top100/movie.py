@@ -6,10 +6,18 @@
 # @Desc  :
 import csv
 
+import os
 import requests
 import re
 from requests.exceptions import RequestException
-from lxml import etree
+
+import cProfile
+import pstats
+
+import lxml.html
+
+etree = lxml.html.etree
+
 from bs4 import BeautifulSoup
 import json
 import time
@@ -146,7 +154,11 @@ def write_to_file(item):
 def download_thumb(name, url, num):
     try:
         response = requests.get(url)
-        with open('./封面图/' + name + '.jpg', 'wb') as f:
+        dir_path = './封面图/'
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+
+        with open(dir_path + name + '.jpg', 'wb') as f:
             f.write(response.content)
             print('第%s部电影封面下载完毕' % num)
             print('---------------------------')
@@ -167,7 +179,32 @@ def main(offset):
         download_thumb(item['name'], item['thumb'], item['index'])
 
 
-if __name__ == '__main__':
+def run1():
     for i in range(10):
-        main(i * 10)
-        time.sleep(0.5)
+        number = i * 10
+        main(number)
+
+
+# 单线程启动
+# if __name__ == '__main__':
+#     run1()
+
+def run2():
+    pool = Pool()
+    pool.map(main, [i * 10 for i in range(10)])
+
+
+# 多进程启动
+from multiprocessing import Pool
+
+if __name__ == '__main__':
+    log_path = "log"
+    if os.path.exists(log_path):
+        pass
+    else:
+        with open(log_path, "w", encoding='utf-8') as f:
+            pass
+    cProfile.run('run2()', log_path)
+
+    p = pstats.Stats(log_path)
+    p.strip_dirs().sort_stats("cumulative").print_stats(200)
