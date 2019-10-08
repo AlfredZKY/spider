@@ -143,21 +143,17 @@ def get_release_area(data):
 
 
 # 数据的存储
-def write_to_file(item):
-    with open('猫眼top100.csv', 'a', encoding='utf_8_sig', newline='') as f:
+def write_to_file(item,dir_path):
+    with open(dir_path + '猫眼top100.csv', 'a', encoding='utf_8_sig', newline='') as f:
         fieldnames = ['index', 'thumb', 'name', 'star', 'time', 'area', 'score']
         w = csv.DictWriter(f, fieldnames=fieldnames)
-        w.writeheader()
+        # w.writeheader()
         w.writerow(item)
 
 
-def download_thumb(name, url, num):
+def download_thumb(name, url, num,dir_path):
     try:
         response = requests.get(url)
-        dir_path = './封面图/'
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
-
         with open(dir_path + name + '.jpg', 'wb') as f:
             f.write(response.content)
             print('第%s部电影封面下载完毕' % num)
@@ -165,18 +161,26 @@ def download_thumb(name, url, num):
 
     except RequestException as e:
         print(e)
-        pass
 
 
 def main(offset):
     url = "https://maoyan.com/board/4?offset={0}".format(offset)
     html = get_one_page(url)
-    # for item in parse_one_page(html):
+    dir_path_data = './top100/data/'
+
+    if not os.path.exists(dir_path_data):
+        os.makedirs(dir_path_data)
+
+    dir_path_photo = './top100/picture/'
+    if not os.path.exists(dir_path_photo):
+        os.makedirs(dir_path_photo)
+
+    for item in parse_one_page(html):
     # for item in parse_one_page1(html):
     # for item in parse_one_page2(html):
-    for item in parse_one_page3(html):
-        write_to_file(item)
-        download_thumb(item['name'], item['thumb'], item['index'])
+    # for item in parse_one_page3(html):
+        write_to_file(item,dir_path_data)
+        download_thumb(item['name'], item['thumb'], item['index'],dir_path_photo)
 
 
 def run1():
@@ -198,13 +202,15 @@ def run2():
 from multiprocessing import Pool
 
 if __name__ == '__main__':
-    log_path = "log"
-    if os.path.exists(log_path):
-        pass
+    log_path = "./top100/"
+    if not os.path.exists(log_path):
+        os.makedirs(log_path)
     else:
-        with open(log_path, "w", encoding='utf-8') as f:
+        log_file = log_path + 'log'
+        with open(log_file, "w", encoding='utf-8') as f:
             pass
-    cProfile.run('run2()', log_path)
 
-    p = pstats.Stats(log_path)
-    p.strip_dirs().sort_stats("cumulative").print_stats(200)
+        cProfile.run('run2()', log_file)
+
+        p = pstats.Stats(log_file)
+        p.strip_dirs().sort_stats("cumulative").print_stats(200)
