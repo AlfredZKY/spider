@@ -1,4 +1,15 @@
 {
-    "python.pythonPath": "C:\\Users\\zky\\Anaconda3\\envs\\py3.6\\python.exe",
-    "editor.mouseWheelZoom": true
+    "python.pythonPath": "C:\\ProgramData\\Anaconda3\\envs\\py3.6\\python.exe",
+    "editor.mouseWheelZoom": true,
+    "sqltools.connections": [
+        {
+            "database": "anchor_data",
+            "dialect": "MySQL",
+            "name": "mysql",
+            "password": "123456",
+            "port": 3306,
+            "server": "localhost",
+            "username": "feng"
+        }
+    ]
 }
