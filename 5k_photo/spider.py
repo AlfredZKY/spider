@@ -82,7 +82,7 @@ def crawler_photo(type_id,photo_count):
         # 下载图片
         down_load(file_url,file_full_name,now_photo,all_photo_count)
         now_photo = now_photo + 1
-        seconds = random.random(2,6)
+        seconds = random.randint(2,6)
         time.sleep(seconds)
 
 if __name__ == '__main__':
