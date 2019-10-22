@@ -44,6 +44,7 @@ def get_one_page(i):
 # 解析网页数据
 def parse_one_page(html):
     soup = BeautifulSoup(html,'lxml')
+    # css 选择器 选择id select('#link1')
     content = soup.select("#myTable04")[0]
     tbl = pd.read_html(content.prettify(),header = 0)[0]
     # prettify()优化代码,[0]从pd.read_html返回的list中提取出DataFrame
