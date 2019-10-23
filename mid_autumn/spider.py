@@ -34,28 +34,28 @@ def save_to_csv(name,city,data):
             f.write('city,time,wea,tem,wind,wind_level\n')
             for d in data:
                 try:
-                    row = '{},{},{},{},{},{}'.format(city,
+                    row = '{},{},{},{},{},{}\n'.format(city,
                                                      d['time'],
                                                      d['wea'],
                                                      d['tem'],
                                                      d['wind'],
                                                      d['wind_level'])
                     f.write(row)
-                    f.write('\n')
+                    #f.write('\n')
                 except:
                     continue
     else:
         with open(dir_path_weather + '%s_data.csv' % name, 'a+', encoding='utf-8') as f:
             for d in data:
                 try:
-                    row = '{},{},{},{},{},{}'.format(city,
+                    row = '{},{},{},{},{},{}\n'.format(city,
                                                      d['time'],
                                                      d['wea'],
                                                      d['tem'],
                                                      d['wind'],
                                                      d['wind_level'])
                     f.write(row)
-                    f.write('\n')
+                    #f.write('\n')
                 except:
                     continue
 
@@ -92,7 +92,6 @@ def read_data():
 
     provincial_data = pd.DataFrame()
     attraction_data = pd.DataF
-    rame()
 
     # 抓取出省会数据
     # print(type(provincial['city'].values.tolist()))
