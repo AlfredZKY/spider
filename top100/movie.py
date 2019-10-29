@@ -4,6 +4,10 @@
 # @Author: Feng
 # @Date  : 2019/9/13
 # @Desc  :
+from multiprocessing import Pool
+import time
+import json
+from bs4 import BeautifulSoup
 import csv
 
 import os
@@ -17,10 +21,6 @@ import pstats
 import lxml.html
 
 etree = lxml.html.etree
-
-from bs4 import BeautifulSoup
-import json
-import time
 
 
 def get_one_page(url):
@@ -40,7 +40,7 @@ def get_one_page(url):
 # 提取网页内容的方法 采取正则表达式
 def parse_one_page(html):
     pattern = re.compile(
-        '<dd>.*?board-index.*?>(\d+)</i>.*?<img data-src="(.*?)".*?name"><a.*?>(.*?)</a>.*?star">(.*?)</p>' \
+        '<dd>.*?board-index.*?>(\d+)</i>.*?<img data-src="(.*?)".*?name"><a.*?>(.*?)</a>.*?star">(.*?)</p>'
         '.*?releasetime">(.*?)</p>.*?integer">(.*?)</i>.*?fraction">(.*?)</i>.*?</dd>', re.S)
     items = re.findall(pattern, html)
     for item in items:
@@ -73,7 +73,7 @@ def parse_one_page1(html):
             'time': get_release_time(item.xpath('.//p[@class = "releasetime"]/text()')[0].strip()[5:]),
             'area': get_release_area(item.xpath('.//p[@class = "releasetime"]/text()')[0].strip()[5:]),
             'score': item.xpath('.//p[@class = "score"]/i[1]/text()')[0] +
-                     item.xpath('.//p[@class = "score"]/i[2]/text()')[0]
+            item.xpath('.//p[@class = "score"]/i[2]/text()')[0]
         }
 
 
@@ -106,7 +106,8 @@ def parse_one_page3(html):
             'time': get_release_time(soup.find_all(class_='releasetime')[item].string.strip()[5:]),
             'area': get_release_area(soup.find_all(class_='releasetime')[item].string.strip()[5:]),
             'score': soup.find_all(name='i', attrs={'class': 'integer'})[item].string.strip() +
-                     soup.find_all(name='i', attrs={'class': 'fraction'})[item].string.strip()
+            soup.find_all(name='i', attrs={'class': 'fraction'})[
+                item].string.strip()
         }
 
 
@@ -143,15 +144,16 @@ def get_release_area(data):
 
 
 # 数据的存储
-def write_to_file(item,dir_path):
+def write_to_file(item, dir_path):
     with open(dir_path + '猫眼top100.csv', 'a', encoding='utf_8_sig', newline='') as f:
-        fieldnames = ['index', 'thumb', 'name', 'star', 'time', 'area', 'score']
+        fieldnames = ['index', 'thumb', 'name',
+                      'star', 'time', 'area', 'score']
         w = csv.DictWriter(f, fieldnames=fieldnames)
         # w.writeheader()
         w.writerow(item)
 
 
-def download_thumb(name, url, num,dir_path):
+def download_thumb(name, url, num, dir_path):
     try:
         response = requests.get(url)
         with open(dir_path + name + '.jpg', 'wb') as f:
@@ -176,11 +178,12 @@ def main(offset):
         os.makedirs(dir_path_photo)
 
     for item in parse_one_page(html):
-    # for item in parse_one_page1(html):
-    # for item in parse_one_page2(html):
-    # for item in parse_one_page3(html):
-        write_to_file(item,dir_path_data)
-        download_thumb(item['name'], item['thumb'], item['index'],dir_path_photo)
+        # for item in parse_one_page1(html):
+        # for item in parse_one_page2(html):
+        # for item in parse_one_page3(html):
+        write_to_file(item, dir_path_data)
+        download_thumb(item['name'], item['thumb'],
+                       item['index'], dir_path_photo)
 
 
 def run1():
@@ -199,7 +202,6 @@ def run2():
 
 
 # 多进程启动
-from multiprocessing import Pool
 
 if __name__ == '__main__':
     log_path = "./top100/"

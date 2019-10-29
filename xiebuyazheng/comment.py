@@ -7,6 +7,8 @@ import os
 from requests.exceptions import RequestException
 
 # 下载第一页数据
+
+
 def get_one_page(url):
     try:
         headers = {
@@ -22,26 +24,32 @@ def get_one_page(url):
         return None
 
 # 解析第一页数据
+
+
 def parse_one_page(html):
     data = json.loads(html)['cmts']
     for item in data:
         yield{
             'content': item['content'],
-            'date' : item['time'].split(' ')[0],
-            'rate' : item['score'],
-            'city' : item['cityName'],
-            'nickname' : item['nickName']
+            'date': item['time'].split(' ')[0],
+            'rate': item['score'],
+            'city': item['cityName'],
+            'nickname': item['nickName']
         }
 
+
 def save_to_txt(dir_path_data):
-    for i in range(1,1001):
-        url = 'http://m.maoyan.com/mmdb/comments/movie/248566.json?_v_=yes&offset=' + str(i)
+    for i in range(1, 1001):
+        url = 'http://m.maoyan.com/mmdb/comments/movie/248566.json?_v_=yes&offset=' + \
+            str(i)
         html = get_one_page(url)
         print('正在保存第%d页' % i)
         for item in parse_one_page(html):
-            with open(dir_path_data + 'xie_zheng.txt','a',encoding='utf-8') as f:
-                f.write(item['date'] + ',' + item['nickname'] + ',' + item['city'] + ',' + str(item['rate']) + ',' + item['content'] + '\n')
-        time.sleep(5 + float(random.randint(1,100))/20)
+            with open(dir_path_data + 'xie_zheng.txt', 'a', encoding='utf-8') as f:
+                f.write(item['date'] + ',' + item['nickname'] + ',' + item['city'] +
+                        ',' + str(item['rate']) + ',' + item['content'] + '\n')
+        time.sleep(5 + float(random.randint(1, 100))/20)
+
 
 if __name__ == '__main__':
     dir_path_data = './xiebuyazheng/data/'

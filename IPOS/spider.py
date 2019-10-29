@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 ts.set_token('404ba015bd44c01cf09c8183dcd89bb9b25749057ff72b5f8671b9e6')
 pro = ts.pro_api()
 
+
 def get_code():
     # 获取所有的股票列表
     data = ts.get_stock_basics()
@@ -33,19 +34,21 @@ def get_code():
     data['code2'] = data.index
 
     # apply方法添加后缀
-    data['code2'] = data['code2'].apply(lambda i:i+'.SZ')
+    data['code2'] = data['code2'].apply(lambda i: i+'.SZ')
     data = data.set_index(['code2'])
     # 将code和name转为dict,因为我们只需要表格中的代码和名称列
     data = data['name']
     data = data.to_dict()
     return data
 
-def stock(key,start,end,value):
+
+def stock(key, start, end, value):
     # 添加代码列和名称列
-    data = pro.daily_basic(ts_code=key,start_date=start,end_date=end)
+    data = pro.daily_basic(ts_code=key, start_date=start, end_date=end)
     print(data)
     # 替换掉code后缀.SZ,regex设置为True才行
     # data['code'] = data['ts_code'].replace('.SZ','',regex=True)
+
 
 def main():
     ts_code = get_code()
@@ -54,15 +57,9 @@ def main():
     keys = list(ts_code.keys())
     values = list(ts_code.values())
 
-    for key,value in ts_code.items():
-        stock(key,start,end,value)
-
+    for key, value in ts_code.items():
+        stock(key, start, end, value)
 
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
