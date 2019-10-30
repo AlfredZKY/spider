@@ -98,7 +98,7 @@ def read_data():
     attraction = pd.read_csv('./mid_autumn/attractions')
 
     provincial_data = pd.DataFrame()
-    attraction_data = pd.DataF
+    attraction_data = pd.DataFrame()
 
     # 抓取出省会数据
     # print(type(provincial['city'].values.tolist()))
