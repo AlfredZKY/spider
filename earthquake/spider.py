@@ -51,7 +51,9 @@ def save_to_csv(item):
         writer.writerow(item)
 
 def main(page):
-    url = f"http://www.ceic.ac.cn/ajax/speedsearch?num=6&&page={0}".format(page)
+    print(page)
+    url = "http://www.ceic.ac.cn/ajax/speedsearch?num=6&&page={0}".format(page)
+    print(url)
     html = get_one_page(url)[1:-1]
     # print(type(html))
     html = json.loads(html)
@@ -61,5 +63,5 @@ def main(page):
 
 
 if __name__ == "__main__":
-    for page in range(57):
+    for page in range(1,58):
         main(page)
