@@ -8,9 +8,10 @@ chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--headless')
 
 # 赋值给一个浏览器对象
-chrome_driver = r'C:\Users\zky\Anaconda3\envs\py3.6\Lib\site-packages\selenium\webdriver\chrome\chromedriver.exe'
+chrome_driver_h = r'C:\Users\zky\Anaconda3\envs\py3.6\Lib\site-packages\selenium\webdriver\chrome\chromedriver.exe'
+chrome_driver_g = r'C:\ProgramData\Anaconda3\envs\py3.6\Lib\site-packages\selenium\webdriver\chrome\chromedriver.exe'
 browser = webdriver.Chrome(
-    executable_path=chrome_driver, chrome_options=chrome_options)
+    executable_path=chrome_driver_g, chrome_options=chrome_options)
 
 # browser = webdriver.PhantomJS()
 # browser.maximize_window()  # 最大化窗口,可以选择设置
@@ -28,7 +29,7 @@ td_content = element.find_elements_by_tag_name("td")
 lst = []  # 存储为list
 
 for td in td_content:
-    lst.append(td.text)
+    lst.append(td.text.encode('utf-8').decode('gb2312','ignore'))
 
 # print(lst)
 
@@ -40,7 +41,7 @@ col = len(element.find_elements_by_css_selector(
 print(col)
 # 通过定位一行td的数量，可获得表格的列数，然后将list拆分对应列数的子list 把每一行都拆分出来
 lst = [lst[i:i+col] for i in range(0, len(lst), col)]
-# print(lst)
+print(lst)
 # 打开原网页中'详细'链接可以查看更详细的数据，这里我们可以把url提取出来
 lst_link = []
 
@@ -60,4 +61,4 @@ df_table = pd.DataFrame(lst)
 
 # 添加到url列
 df_table['url'] = lst_link
-print(df_table)
+# print(df_table)
