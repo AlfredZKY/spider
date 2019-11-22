@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 import os
 import re
+from tqdm import tqdm
 
 import lxml.html
 etree = lxml.html.etree
@@ -109,6 +110,38 @@ def save_pic(pic):
 # 从外到内定位url的位置：<p>节点-<a>节点-<img>节点里的src属性值
 
 
+def download_from_url(url, dst):
+    response = requests.get(url, stream=True)
+    file_size = int(response.headers['content-length'])
+
+    if os.path.exists(dst):
+        first_byte = os.path.getsize(dst)
+    else:
+        first_byte = 0
+
+    if first_byte >= file_size:
+        return file_size
+
+    header = {
+        "Range": f"bytes={first_byte} - {file_size}",
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
+    }
+
+    pbar = tqdm(
+        total=file_size, initial=first_byte, unit='B', unit_scale=True, desc=dst
+    )
+
+    req = requests.get(url, headers=header, stream=True)
+
+    with (open(dst, "ab")) as f:
+        for chunk in req.iter_content(chunk_size=1024):
+            if chunk:
+                f.write(chunk)
+                pbar.update(1024)
+    pbar.close()
+    return file_size
+
+
 def main():
     # for item in parse_data_re():
     #     print(item)
@@ -117,7 +150,11 @@ def main():
     # for item in parse_data_Css():
     #     print(item)
     for item in parse_data_find_all():
-        save_pic(item)
+        # save_pic(item)
+        data_path = './PHOTO_wangyi/data/' + item.get('title')+ str(item.get('num')) + '.png'
+        url = item.get('pic')
+        #print(data_path)
+        download_from_url(url, data_path)
 
 
 if __name__ == '__main__':
