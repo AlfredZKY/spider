@@ -1,6 +1,7 @@
 import requests
 import json
 from requests.exceptions import RequestException
+import pymongo
 
 client = pymongo.MongoClient('localhost',27017)
 db = client.Huxiu
