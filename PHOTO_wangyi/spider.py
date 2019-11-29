@@ -143,19 +143,24 @@ def download_from_url(url, dst):
 
 
 def main():
+    print('*' * 100)
+    print('\t\t\t\t欢迎使用文件下载小助手')
+    print('作者:AlfredZKY\ngithub:http://blog.csdn.net/c406495762')
+    print('*' * 100)
     # for item in parse_data_re():
     #     print(item)
     # for item in parse_data_Xpath():
     #     print(item)
     # for item in parse_data_Css():
     #     print(item)
-    for item in parse_data_find_all():
-        # save_pic(item)
-        data_path = './PHOTO_wangyi/data/' + item.get('title')+ str(item.get('num')) + '.png'
-        url = item.get('pic')
-        #print(data_path)
-        download_from_url(url, data_path)
-
+    # for item in parse_data_find_all():
+    #     # save_pic(item)
+    #     data_path = './PHOTO_wangyi/data/' + item.get('title')+ str(item.get('num')) + '.png'
+    #     url = item.get('pic')
+    #     #print(data_path)
+    #     download_from_url(url, data_path)
+    url = 'http://www.demongan.com/source/game/二十四点.zip'
+    download_from_url(url,'二十四点.zip')
 
 if __name__ == '__main__':
     main()
